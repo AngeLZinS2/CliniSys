@@ -1,5 +1,4 @@
-# Build stage
-FROM node:20-alpine AS build
+FROM node:20-alpine
 
 # Set working directory
 WORKDIR /app
@@ -7,8 +6,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies (production only)
+RUN npm ci --only=production
 
 # Copy project files
 COPY . .
@@ -16,17 +15,11 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Production stage
-FROM nginx:alpine
-
-# Copy built files from build stage
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Copy nginx configuration (optional, create if needed)
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
-
 # Expose port 80
 EXPOSE 80
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Set environment variable for Vite preview port
+ENV PORT=80
+
+# Start Vite preview server
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "80"]
