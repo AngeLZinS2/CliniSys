@@ -3,6 +3,8 @@ version: '3.8'
 services:
   clinisys:
     build: .
+    environment_file:
+      - .env
     container_name: clinisys-app
     ports:
       - "80:80"
