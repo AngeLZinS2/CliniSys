@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  clinisys:
+    build: .
+    container_name: clinisys-app
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=80
